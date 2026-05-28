@@ -71,22 +71,51 @@ global.characters = {}
 global.playerPaletteSurface = -4
 function character_get_color(_palette, _index)
 {
-	var col = {
-		main: #FFFFFF,
-		secon: #FFFFFF,
-	}
-	if !surface_exists(global.playerPaletteSurface)
-		global.playerPaletteSurface = surface_create(sprite_get_width(_palette), sprite_get_height(_palette))
-	
-	surface_set_target(global.playerPaletteSurface)
-	draw_clear_alpha(c_black, 0)
-	draw_sprite(_palette, 0, 0, 0)
-	surface_reset_target()
-	
-	col.main = surface_getpixel(global.playerPaletteSurface, _index, 2)
-	col.secon = surface_getpixel(global.playerPaletteSurface, _index, 5)
-	
-	return col
+    var col = {
+        main: #FFFFFF,
+        secon: #FFFFFF,
+    }
+    
+    // so i decided to make a buffer down there because surface_getpixel can be taxing from what ive read, this was lowk confusing at first but i managed to handle it
+    if !surface_exists(global.playerPaletteSurface) {
+        global.playerPaletteSurface = surface_create(sprite_get_width(_palette), sprite_get_height(_palette));
+        
+        surface_set_target(global.playerPaletteSurface);
+        draw_clear_alpha(c_black, 0);
+        draw_sprite(_palette, 0, 0, 0);
+        surface_reset_target();
+        
+       
+        var _w = surface_get_width(global.playerPaletteSurface);
+        var _h = surface_get_height(global.playerPaletteSurface);
+        global.playerPaletteBuffer = buffer_create(_w * _h * 4, buffer_fixed, 1);
+        buffer_get_surface(global.playerPaletteBuffer, global.playerPaletteSurface, 0);
+    }
+    
+    
+    if buffer_exists(global.playerPaletteBuffer) {
+        var _w = surface_get_width(global.playerPaletteSurface);
+        
+
+        var _offset_main = ((2 * _w) + _index) * 4; 
+        var _offset_secon = ((5 * _w) + _index) * 4;
+        
+        
+        buffer_seek(global.playerPaletteBuffer, buffer_seek_start, _offset_main);
+        var _r1 = buffer_read(global.playerPaletteBuffer, buffer_u8);
+        var _g1 = buffer_read(global.playerPaletteBuffer, buffer_u8);
+        var _b1 = buffer_read(global.playerPaletteBuffer, buffer_u8);
+        col.main = make_color_rgb(_r1, _g1, _b1);
+        
+        
+        buffer_seek(global.playerPaletteBuffer, buffer_seek_start, _offset_secon);
+        var _r2 = buffer_read(global.playerPaletteBuffer, buffer_u8);
+        var _g2 = buffer_read(global.playerPaletteBuffer, buffer_u8);
+        var _b2 = buffer_read(global.playerPaletteBuffer, buffer_u8);
+        col.secon = make_color_rgb(_r2, _g2, _b2);
+    }
+    
+    return col;
 }
 
 global.characters[characters.mildred] =
@@ -280,3 +309,7 @@ blend = c_white
 blendAmount = 0
 blendSpeed = 0.35 / 17
 poison = 0
+
+//the old code was creating two brand-new arrays in the game's memory 60 times every second causing some lag, rest of the fix is in the step code
+spinnySprites_list = [spr_player_swingading, spr_milton_hammerspin, spr_player_superjumpcancel];
+spinnySpritesV_list = [spr_player_buzzsaw, spr_player_buzzsawBump, spr_player_buzzsawFastFall, spr_milton_dive];
