@@ -60,32 +60,29 @@ if hitstun.is == false
 	}
 	scr_collision()
 	scr_collide_destructibles()
-	var _spinnySprites = [spr_player_swingading, spr_milton_hammerspin, spr_player_superjumpcancel]
-	if array_contains(_spinnySprites, sprite_index)
-	{
-		if !instance_exists(spinnyeffect)
-		{
-			spinnyeffect = instance_create(x, y, obj_spinnyeffect)
-		}
-		with spinnyeffect 
-		{ 
-			targetSprite = other.sprite_index
-			sprite_index = spr_spinnyeffect
-		}
-	}
-	var _spinnySpritesV = [spr_player_buzzsaw, spr_player_buzzsawBump, spr_player_buzzsawFastFall, spr_milton_dive]
-	if array_contains(_spinnySpritesV, sprite_index)
-	{
-		if !instance_exists(spinnyeffect)
-		{
-			spinnyeffect = instance_create(x, y, obj_spinnyeffect)
-		}
-		with spinnyeffect 
-		{
-			targetSprite = other.sprite_index
-			sprite_index = spr_spinnyeffect_vertical
-		}
-	}
+if array_contains(spinnySprites_list, sprite_index)
+{
+    if !instance_exists(spinnyeffect)
+        spinnyeffect = instance_create(x, y, obj_spinnyeffect);
+        
+    with spinnyeffect 
+    { 
+        targetSprite = other.sprite_index;
+        sprite_index = spr_spinnyeffect;
+    }
+}
+
+if array_contains(spinnySpritesV_list, sprite_index)
+{
+    if !instance_exists(spinnyeffect)
+        spinnyeffect = instance_create(x, y, obj_spinnyeffect);
+        
+    with spinnyeffect 
+    {
+        targetSprite = other.sprite_index;
+        sprite_index = spr_spinnyeffect_vertical;
+    }
+}
 	if grounded
 		coyote_time = 10
 	else if vsp < 0
