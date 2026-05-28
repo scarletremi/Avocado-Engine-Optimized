@@ -6,6 +6,7 @@ for (var i = 0; i < array_length(layers); i++)
 	var lay = layers[i];
 	var layer_name = layer_get_name(lay);
 	var tile_id = layer_tilemap_get_id(lay);
+	
 	switch layer_name
 	{
 		case "Foregrounds_1":
@@ -157,6 +158,7 @@ for (var i = 0; i < array_length(layers); i++)
 			layer_y(lay, wave(0, 50, 8, 10) + (layer_get_vspeed(lay) * current_time / 5) * 0.15)
 		break
 	}
+}
 	escape_background(bg_beakerBack, bg_beakerBack_escape)
 	escape_background(bg_beakerBackTrees, bg_beakerBackTrees_escape)
 	escape_background(bg_beakerTrees, bg_beakerTrees_escape)
@@ -168,4 +170,5 @@ for (var i = 0; i < array_length(layers); i++)
 	escape_background(bg_temple1, bg_temple_escape1)
 	escape_background(bg_temple2, bg_temple_escape2)
 	escape_background(bg_temple3, bg_temple_escape3)
-}
+	
+	//all i did was move the escape backgrounds outside of the loop 
